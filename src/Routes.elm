@@ -9,6 +9,13 @@ type Route
     | AboutRoute 
     | NotFoundRoute
 
+enumRoutes : List (Route)
+enumRoutes = 
+    [ HomeRoute
+    , AboutRoute 
+    , NotFoundRoute
+    ]
+
 matchRoute : Parser (Route -> a) a
 matchRoute =
     oneOf
@@ -48,3 +55,10 @@ routeToUrlString route =
             AboutRoute -> "about"
             NotFoundRoute -> "404"
     in url
+
+routeToTitleString : Route -> String
+routeToTitleString route =
+    case route of
+        HomeRoute -> "Home"
+        AboutRoute -> "About"
+        NotFoundRoute -> "None"

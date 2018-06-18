@@ -1,12 +1,12 @@
 module Views exposing (..)
 
-import Material
-import Material.Layout as Layout
+import Material.Typography as Typo
+import Material.Options exposing (Style, styled, css)
+import Material.Layout as Layout exposing (row, spacer, title)
+import Material.Grid exposing (..)
 import Material.Color as Color
 import Material.Scheme
 import Material.Button as Button
-import Material.Options exposing (css)
-import Html.Attributes exposing (href, class, style)
 import Html exposing (..)
 import Models exposing (..)
 import Routes exposing (..)
@@ -21,18 +21,45 @@ view model =
             , Layout.onSelectTab SelectTab
             , Layout.selectedTab (routeToTabNum model.currentRoute)
             ]
-            { header = [ h1 [] [ text "Home" ] ]
+            { header = initHeader
             , drawer = []
-            , tabs = ( [ text "HOME", text "ABOUT" ], [] )
-            , main = [ viewForModel model ]
+            , tabs = initTabs
+            , main = [ viewForRoute model.currentRoute ]
             }
     in Material.Scheme.topWithScheme Color.Teal Color.LightGreen contents
 
-viewForModel : Model -> Html msg
-viewForModel model =
+viewForRoute : Route -> Html msg
+viewForRoute route =
     let msg =
-        case model.currentRoute of
-            HomeRoute -> toString model.currentRoute
-            AboutRoute -> toString model.currentRoute
+        case route of
+            HomeRoute -> toString route
+            AboutRoute -> toString route
             NotFoundRoute -> "404: Not found"
-    in div [] [ text msg ]
+    in grid [] 
+        [ cell [ size All 4 ]
+            [ styled h4 [ Typo.headline ] [ text msg ] 
+            ]
+        ]
+
+initHeader : List (Html msg)
+initHeader = 
+    [ row [] 
+        [ title [] [ 
+            styled h1 [ Typo.title ] [ text "WIP Website" ] ]
+        ]
+    ]
+
+isLegitRoute : Route -> Bool
+isLegitRoute route =
+    case route of
+        NotFoundRoute -> False
+        _ -> True
+
+initTabs : (List (Html msg), List (Style msg))
+initTabs = 
+    let allRoutes =
+            List.filter isLegitRoute enumRoutes
+        texts =
+            List.map (text << routeToTitleString) allRoutes
+    in
+        ( texts, [ Typo.subhead ] )
