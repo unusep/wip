@@ -1,23 +1,32 @@
 module Views exposing (..)
 
+import Material
+import Material.Layout as Layout
+import Material.Color as Color
+import Material.Scheme
+import Material.Button as Button
+import Material.Options exposing (css)
+import Html.Attributes exposing (href, class, style)
 import Html exposing (..)
-import Bootstrap.CDN as CDN
-import Bootstrap.Grid as Grid
 import Models exposing (..)
 import Routes exposing (..)
+import Msgs exposing (..)
 
-view : Model -> Html msg
+
+view : Model -> Html Msg
 view model =
-    Grid.container []
-        [ CDN.stylesheet -- creates an inline style node with the Bootstrap CSS
-        , Grid.row []
-            [ Grid.col []
-                [ text "Some content for my view here..."
-                , viewForModel model
-                ]
+    let contents = 
+        Layout.render Mdl model.mdl
+            [ Layout.fixedHeader
+            , Layout.onSelectTab SelectTab
+            , Layout.selectedTab (routeToTabNum model.currentRoute)
             ]
-
-        ]
+            { header = [ h1 [] [ text "Home" ] ]
+            , drawer = []
+            , tabs = ( [ text "HOME", text "ABOUT" ], [] )
+            , main = [ viewForModel model ]
+            }
+    in Material.Scheme.topWithScheme Color.Teal Color.LightGreen contents
 
 viewForModel : Model -> Html msg
 viewForModel model =

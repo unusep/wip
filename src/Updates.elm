@@ -1,5 +1,7 @@
 module Updates exposing (..)
 
+import Material
+import Navigation exposing (newUrl)
 import Msgs exposing (..)
 import Models exposing (Model)
 import Routes exposing (..)
@@ -15,3 +17,11 @@ update msg model =
                     Routes.extractRoute location
             in
                 ( { model | currentRoute = currentRoute } , Cmd.none )
+        Mdl msg_ ->
+            Material.update Mdl msg_ model
+        SelectTab num ->
+            let currentRoute = tabNumToRoute num
+                currentUrl = "#/" ++ routeToUrlString currentRoute
+            in 
+                ( {model | currentRoute = currentRoute }, newUrl currentUrl )
+

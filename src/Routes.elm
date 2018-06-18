@@ -4,18 +4,18 @@ import Navigation exposing (Location)
 import UrlParser exposing (..)
 
 
-matchRoute : Parser (Route -> a) a
-matchRoute =
-    oneOf
-        [ map HomeRoute top
-        , map AboutRoute (s "about")
-        , map NotFoundRoute (s "404")
-        ]
-
 type Route
     = HomeRoute
     | AboutRoute 
     | NotFoundRoute
+
+matchRoute : Parser (Route -> a) a
+matchRoute =
+    oneOf
+        [ map HomeRoute top
+        , map AboutRoute (s <| routeToUrlString AboutRoute)
+        , map NotFoundRoute (s <| routeToUrlString NotFoundRoute)
+        ]
 
 extractRoute : Location -> Route
 extractRoute location =
@@ -25,3 +25,26 @@ extractRoute location =
 
         Nothing ->
             NotFoundRoute
+
+tabNumToRoute : Int -> Route
+tabNumToRoute n = 
+    case n of
+        0 -> HomeRoute
+        1 -> AboutRoute
+        _ -> NotFoundRoute
+
+routeToTabNum : Route -> Int
+routeToTabNum route = 
+    case route of
+        HomeRoute -> 0
+        AboutRoute -> 1
+        NotFoundRoute -> -1
+
+routeToUrlString : Route -> String
+routeToUrlString route =
+    let url = 
+        case route of
+            HomeRoute -> ""
+            AboutRoute -> "about"
+            NotFoundRoute -> "404"
+    in url

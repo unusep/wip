@@ -1,5 +1,7 @@
 module Main exposing (main)
 
+import Material
+import Material.Layout as Layout
 import Models exposing (..)
 import Msgs exposing (..)
 import Views exposing (..)
@@ -14,8 +16,9 @@ init location =
     let
         currentRoute =
             Routes.extractRoute location
+        model = initialModel currentRoute
     in
-        ( initialModel currentRoute, Cmd.none )
+        ( model , Layout.sub0 Mdl )
 
 -- MAIN
 main : Program Never Model Msg
